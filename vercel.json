@@ -1,0 +1,16 @@
+{
+  "rewrites": [
+    {
+      "source": "/api/(.*)",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/manifest.json",
+      "destination": "/api/index.py"
+    },
+    {
+      "source": "/sw.js",
+      "destination": "/api/index.py"
+    }
+  ]
+}
