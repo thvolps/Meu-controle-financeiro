@@ -1,14 +1,8 @@
-# Painel Financeiro Pessoal
+# Painel Financeiro Multi-Usuário (Vercel + Turso / SQLite)
 
-Plataforma completa para gestão de finanças pessoais, contas a pagar, receitas e metas de reserva.
+Sistema completo de finanças com autenticação individual segura (JWT) e isolamento total de dados por usuário.
 
-## Como Subir no GitHub e Deploy na Vercel:
-1. Extraia o conteúdo deste ZIP.
-2. Certifique-se de que os arquivos fiquem soltos na raiz do seu repositório:
-   - index.html
-   - vercel.json
-   - requirements.txt
-   - .gitignore
-   - api/index.py
-3. Faça commit e push para o GitHub.
-4. Na Vercel, importe o projeto e clique em **Deploy**.
+## Estrutura
+- **Autenticação:** Cadastro e login com senhas criptografadas (PBKDF2-HMAC-SHA256) e tokens JWT.
+- **Isolamento de Dados:** Cada usuário enxerga apenas suas contas, receitas, categorias e caixinhas.
+- **Nuvem Turso ou Local SQLite:** Se as variáveis `TURSO_DATABASE_URL` e `TURSO_AUTH_TOKEN` estiverem configuradas, conecta à nuvem automaticamente. Caso contrário, usa arquivo SQLite local.
