@@ -71,6 +71,14 @@
           <i class="fa-solid fa-eye-slash" id="privacy-icon"></i>
         </button>
 
+        <button onclick="openCardsModal()" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-semibold px-3 py-2.5 rounded-xl transition flex items-center gap-1.5" title="Cartões de Crédito">
+          <i class="fa-solid fa-credit-card text-purple-400"></i> Cartões
+        </button>
+
+        <button onclick="openTelegramModal()" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-semibold px-3 py-2.5 rounded-xl transition flex items-center gap-1.5" title="Alertas Telegram">
+          <i class="fa-brands fa-telegram text-sky-400"></i> Telegram
+        </button>
+
         <button onclick="openGoalsModal()" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-semibold px-3 py-2.5 rounded-xl transition flex items-center gap-1.5" title="Metas & Caixinhas">
           <i class="fa-solid fa-piggy-bank text-amber-400"></i> Caixinhas
         </button>
@@ -83,6 +91,10 @@
           <i class="fa-solid fa-file-csv text-emerald-400"></i> CSV
         </button>
 
+        <button onclick="document.getElementById('statement-file-input').click()" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-semibold px-3 py-2.5 rounded-xl transition flex items-center gap-1.5" title="Importar Extrato OFX ou CSV">
+          <i class="fa-solid fa-file-import text-amber-400"></i> Extrato
+        </button>
+        <input type="file" id="statement-file-input" accept=".ofx,.csv" class="hidden" onchange="uploadStatement(event)">
         <button onclick="openIncomeModal()" class="bg-sky-600 hover:bg-sky-500 text-white text-xs font-semibold px-3.5 py-2.5 rounded-xl transition flex items-center gap-1.5" title="Atalho: Tecla R">
           <i class="fa-solid fa-arrow-down"></i> + Receita <kbd class="hidden md:inline bg-sky-700/60 px-1.5 py-0.5 rounded text-[10px] ml-1">R</kbd>
         </button>
@@ -247,6 +259,10 @@
         <h3 class="font-bold text-sm text-white flex items-center gap-2">
           <i class="fa-solid fa-hand-holding-dollar text-sky-400"></i> Entradas / Receitas Registradas
         </h3>
+        <button onclick="document.getElementById('statement-file-input').click()" class="bg-slate-900 hover:bg-slate-800 border border-slate-800 text-slate-300 text-xs font-semibold px-3 py-2.5 rounded-xl transition flex items-center gap-1.5" title="Importar Extrato OFX ou CSV">
+          <i class="fa-solid fa-file-import text-amber-400"></i> Extrato
+        </button>
+        <input type="file" id="statement-file-input" accept=".ofx,.csv" class="hidden" onchange="uploadStatement(event)">
         <button onclick="openIncomeModal()" class="text-xs text-sky-400 hover:text-sky-300 font-medium">
           + Nova Entrada
         </button>
@@ -300,6 +316,84 @@
 
   </div>
 
+  
+  <!-- Modal Cartões de Crédito -->
+  <div id="modal-cards" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-lg p-6 space-y-4 max-h-[90vh] overflow-y-auto">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="font-bold text-white text-lg flex items-center gap-2">
+          <i class="fa-solid fa-credit-card text-purple-400"></i> Gestão de Cartões de Crédito
+        </h3>
+        <button onclick="closeCardsModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <form id="form-card" onsubmit="submitNewCard(event)" class="bg-slate-950 p-4 rounded-xl border border-slate-800 space-y-3">
+        <div class="text-xs font-semibold text-slate-300">Adicionar Novo Cartão</div>
+        <div>
+          <label class="text-[11px] text-slate-400">Nome do Cartão / Banco</label>
+          <input id="card-name" required type="text" placeholder="Ex: Nubank Ultravioleta" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white outline-none">
+        </div>
+        <div class="grid grid-cols-3 gap-2">
+          <div>
+            <label class="text-[11px] text-slate-400">Dia Fecho</label>
+            <input id="card-closing" required type="number" min="1" max="31" placeholder="Ex: 25" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white outline-none">
+          </div>
+          <div>
+            <label class="text-[11px] text-slate-400">Dia Vencimento</label>
+            <input id="card-due" required type="number" min="1" max="31" placeholder="Ex: 5" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white outline-none">
+          </div>
+          <div>
+            <label class="text-[11px] text-slate-400">Limite (R$)</label>
+            <input id="card-limit" step="100" type="number" placeholder="Ex: 5000" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white outline-none">
+          </div>
+        </div>
+        <button type="submit" class="w-full bg-purple-600 hover:bg-purple-500 text-white font-semibold py-2 rounded-lg text-xs transition">Registar Cartão</button>
+      </form>
+
+      <div class="space-y-2">
+        <div class="text-xs font-semibold text-slate-400 uppercase tracking-wider">Cartões Configurados</div>
+        <div id="cards-list" class="space-y-2"></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal Telegram Alertas -->
+  <div id="modal-telegram" class="fixed inset-0 bg-black/80 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl w-full max-w-md p-6 space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <h3 class="font-bold text-white text-base flex items-center gap-2">
+          <i class="fa-brands fa-telegram text-sky-400 text-lg"></i> Alertas no Telegram
+        </h3>
+        <button onclick="closeTelegramModal()" class="text-slate-400 hover:text-white"><i class="fa-solid fa-xmark text-lg"></i></button>
+      </div>
+
+      <div class="text-xs text-slate-400 leading-relaxed bg-slate-950 p-3 rounded-xl border border-slate-800">
+        Receba avisos automáticos de contas atrasadas ou a vencer nos próximos 3 dias diretamente no seu telemóvel via Bot do Telegram.
+      </div>
+
+      <form id="form-telegram" onsubmit="submitTelegramSettings(event)" class="space-y-3">
+        <div>
+          <label class="text-xs text-slate-400">Bot Token (obtido com @BotFather)</label>
+          <input id="tg-token" required type="text" placeholder="Ex: 123456789:ABCdefGhI..." class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:border-sky-500 outline-none mt-1">
+        </div>
+        <div>
+          <label class="text-xs text-slate-400">Chat ID (seu ID com @userinfobot)</label>
+          <input id="tg-chat" required type="text" placeholder="Ex: 987654321" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-xs text-white focus:border-sky-500 outline-none mt-1">
+        </div>
+        <button type="submit" class="w-full bg-sky-600 hover:bg-sky-500 text-white font-semibold py-2.5 rounded-xl transition text-xs">Guardar Configuração</button>
+      </form>
+
+      <div class="flex gap-2 pt-2 border-t border-slate-800">
+        <button type="button" onclick="testTelegramMessage()" class="flex-1 bg-slate-800 hover:bg-slate-700 border border-slate-700 text-slate-300 py-2 rounded-xl text-xs font-semibold transition">
+          <i class="fa-solid fa-paper-plane mr-1 text-sky-400"></i> Testar Conexão
+        </button>
+        <button type="button" onclick="sendTelegramAlertsNow()" class="flex-1 bg-emerald-600/20 hover:bg-emerald-600 border border-emerald-500/40 text-emerald-300 hover:text-white py-2 rounded-xl text-xs font-semibold transition">
+          <i class="fa-solid fa-bell mr-1"></i> Disparar Alertas
+        </button>
+      </div>
+    </div>
+  </div>
+
   <!-- MODAIS DE OPERAÇÃO -->
   <!-- Modal Cadastrar Nova Despesa -->
   <div id="modal" class="fixed inset-0 bg-black/70 backdrop-blur-sm hidden items-center justify-center p-4 z-50">
@@ -330,8 +424,21 @@
           </div>
         </div>
 
+        <div class="grid grid-cols-2 gap-2.5 bg-slate-950 p-2.5 rounded-xl border border-slate-800/80">
+          <div>
+            <label class="text-[11px] text-purple-300">Cartão de Crédito (Opcional)</label>
+            <select id="in-card-select" onchange="handleCardSelected()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white outline-none mt-1">
+              <option value="">Nenhum (Despesa Comum)</option>
+            </select>
+          </div>
+          <div>
+            <label class="text-[11px] text-slate-400">Data da Compra</label>
+            <input id="in-purchase-date" type="date" onchange="handleCardSelected()" class="w-full bg-slate-900 border border-slate-700 rounded-lg px-2.5 py-1.5 text-xs text-white outline-none mt-1">
+          </div>
+        </div>
+
         <div>
-          <label class="text-xs text-slate-400">Primeiro Vencimento</label>
+          <label class="text-xs text-slate-400">Primeiro Vencimento (Fatura)</label>
           <input id="in-due-date" required type="date" class="w-full bg-slate-950 border border-slate-700 rounded-lg px-3 py-2 text-sm text-white focus:border-emerald-500 outline-none">
         </div>
 
@@ -600,7 +707,7 @@
       const password = document.getElementById("auth-password").value;
 
       try {
-        let res, data;
+        let res;
         if (isRegisterMode) {
           const name = document.getElementById("auth-name").value;
           res = await fetch("/api/auth/register", {
@@ -616,9 +723,16 @@
           });
         }
 
-        data = await res.json();
+        const textResponse = await res.text();
+        let data;
+        try {
+          data = JSON.parse(textResponse);
+        } catch (_) {
+          data = { detail: textResponse };
+        }
+
         if (!res.ok) {
-          alert(data.detail || "Erro na autenticação.");
+          alert("Erro (" + res.status + "): " + (data.detail || textResponse || "Falha na requisição."));
           return;
         }
 
@@ -627,7 +741,7 @@
         localStorage.setItem("auth_token", authToken);
         showApp();
       } catch (err) {
-        alert("Erro ao conectar com o servidor.");
+        alert("Erro de ligação: " + (err.message || "Não foi possível comunicar com o servidor."));
       }
     }
 
@@ -715,6 +829,7 @@
       await loadGoals();
       await loadBills();
       await loadProjection();
+      await loadCards();
     }
 
     async function loadBudgets() {
@@ -1388,6 +1503,8 @@ Deseja excluir TAMBÉM todas as parcelas futuras desta compra?`);
       const y = viewDate.getFullYear();
       const m = String(viewDate.getMonth() + 1).padStart(2, '0');
       document.getElementById("in-due-date").value = `${y}-${m}-10`;
+      document.getElementById("in-purchase-date").value = new Date().toISOString().split("T")[0];
+      updateCardDropdown();
       document.getElementById("modal").classList.remove("hidden");
       document.getElementById("modal").classList.add("flex");
       setTimeout(() => document.getElementById("in-title").focus(), 50);
@@ -1565,6 +1682,232 @@ Deseja excluir TAMBÉM todas as parcelas futuras desta compra?`);
     });
 
     // Inicia verificando se já há sessão salva
+    // Auto-categorização inteligente ao digitar o título
+    const titleInput = document.getElementById("in-title");
+    if (titleInput) {
+      let timeout = null;
+      titleInput.addEventListener("input", () => {
+        clearTimeout(timeout);
+        const val = titleInput.value.trim();
+        if (val.length < 3) return;
+
+        timeout = setTimeout(async () => {
+          try {
+            const res = await fetch(`/api/bills/suggest-category?term=${encodeURIComponent(val)}`, {
+              headers: getAuthHeaders()
+            });
+            if (res.ok) {
+              const data = await res.json();
+              if (data.category && !document.getElementById("in-category").value) {
+                document.getElementById("in-category").value = data.category;
+              }
+              if (data.account && !document.getElementById("in-account").value) {
+                document.getElementById("in-account").value = data.account;
+              }
+            }
+          } catch (_) {}
+        }, 400);
+      });
+    }
+
+    async function uploadStatement(e) {
+      const file = e.target.files[0];
+      if (!file) return;
+
+      const formData = new FormData();
+      formData.append("file", file);
+
+      try {
+        const res = await fetch("/api/import/statement", {
+          method: "POST",
+          headers: { "Authorization": `Bearer ${authToken}` },
+          body: formData
+        });
+        const data = await res.json();
+        if (!res.ok) {
+          alert("Erro na importação: " + (data.detail || "Falha ao processar ficheiro."));
+        } else {
+          alert(data.message);
+          loadAll();
+        }
+      } catch (err) {
+        alert("Falha ao comunicar com o servidor.");
+      } finally {
+        e.target.value = "";
+      }
+    }
+
+    
+    let userCards = [];
+
+    async function loadCards() {
+      try {
+        const res = await fetch("/api/cards", { headers: getAuthHeaders() });
+        if (res.ok) {
+          userCards = await res.json();
+          renderCards();
+          updateCardDropdown();
+        }
+      } catch (err) { console.error(err); }
+    }
+
+    function renderCards() {
+      const list = document.getElementById("cards-list");
+      list.innerHTML = "";
+      if (userCards.length === 0) {
+        list.innerHTML = `<div class="text-xs text-slate-500 py-2">Nenhum cartão cadastrado.</div>`;
+        return;
+      }
+      userCards.forEach(c => {
+        const div = document.createElement("div");
+        div.className = "bg-slate-950 p-3 rounded-xl border border-slate-800 flex justify-between items-center text-xs";
+        div.innerHTML = `
+          <div>
+            <div class="font-bold text-white flex items-center gap-1.5">
+              <i class="fa-solid fa-credit-card text-purple-400"></i> ${c.name}
+            </div>
+            <div class="text-slate-400 text-[11px] mt-0.5">
+              Fecho: dia <strong>${c.closing_day}</strong> | Vencimento: dia <strong>${c.due_day}</strong>
+              ${c.card_limit ? ` • Limite: ${formatCurrency(c.card_limit)}` : ''}
+            </div>
+          </div>
+          <button onclick="deleteCard(${c.id})" class="text-slate-600 hover:text-rose-400 p-1.5 transition">
+            <i class="fa-solid fa-trash"></i>
+          </button>
+        `;
+        list.appendChild(div);
+      });
+    }
+
+    function updateCardDropdown() {
+      const select = document.getElementById("in-card-select");
+      if (!select) return;
+      const cur = select.value;
+      select.innerHTML = `<option value="">Nenhum (Despesa Comum)</option>`;
+      userCards.forEach(c => {
+        select.innerHTML += `<option value="${c.id}">${c.name} (Fecho: ${c.closing_day})</option>`;
+      });
+      select.value = cur;
+    }
+
+    async function submitNewCard(e) {
+      e.preventDefault();
+      const payload = {
+        name: document.getElementById("card-name").value,
+        closing_day: parseInt(document.getElementById("card-closing").value),
+        due_day: parseInt(document.getElementById("card-due").value),
+        card_limit: parseFloat(document.getElementById("card-limit").value) || 0
+      };
+      const res = await fetch("/api/cards", {
+        method: "POST",
+        headers: getAuthHeaders({ "Content-Type": "application/json" }),
+        body: JSON.stringify(payload)
+      });
+      if (res.ok) {
+        document.getElementById("form-card").reset();
+        loadCards();
+      } else {
+        const d = await res.json();
+        alert(d.detail || "Erro ao criar cartão.");
+      }
+    }
+
+    async function deleteCard(id) {
+      if (confirm("Remover este cartão de crédito?")) {
+        await fetch(`/api/cards/${id}`, { method: "DELETE", headers: getAuthHeaders() });
+        loadCards();
+      }
+    }
+
+    async function handleCardSelected() {
+      const cardId = document.getElementById("in-card-select").value;
+      const purchaseDate = document.getElementById("in-purchase-date").value;
+      if (!cardId || !purchaseDate) return;
+
+      const card = userCards.find(c => c.id == cardId);
+      if (card && !document.getElementById("in-account").value) {
+        document.getElementById("in-account").value = card.name;
+      }
+
+      try {
+        const res = await fetch("/api/cards/calculate-due", {
+          method: "POST",
+          headers: getAuthHeaders({ "Content-Type": "application/json" }),
+          body: JSON.stringify({ card_id: parseInt(cardId), purchase_date: purchaseDate })
+        });
+        if (res.ok) {
+          const data = await res.json();
+          document.getElementById("in-due-date").value = data.calculated_due_date;
+        }
+      } catch (err) { console.error(err); }
+    }
+
+    function openCardsModal() {
+      document.getElementById("modal-cards").classList.remove("hidden");
+      document.getElementById("modal-cards").classList.add("flex");
+      loadCards();
+    }
+    function closeCardsModal() {
+      document.getElementById("modal-cards").classList.add("hidden");
+      document.getElementById("modal-cards").classList.remove("flex");
+    }
+
+    // TELEGRAM
+    async function openTelegramModal() {
+      document.getElementById("modal-telegram").classList.remove("hidden");
+      document.getElementById("modal-telegram").classList.add("flex");
+      try {
+        const res = await fetch("/api/notifications/settings", { headers: getAuthHeaders() });
+        if (res.ok) {
+          const data = await res.json();
+          if (data.configured) {
+            document.getElementById("tg-token").value = data.masked_token;
+            document.getElementById("tg-chat").value = data.chat_id;
+          }
+        }
+      } catch (err) { console.error(err); }
+    }
+    function closeTelegramModal() {
+      document.getElementById("modal-telegram").classList.add("hidden");
+      document.getElementById("modal-telegram").classList.remove("flex");
+    }
+
+    async function submitTelegramSettings(e) {
+      e.preventDefault();
+      const bot_token = document.getElementById("tg-token").value.trim();
+      const chat_id = document.getElementById("tg-chat").value.trim();
+
+      const res = await fetch("/api/notifications/settings", {
+        method: "POST",
+        headers: getAuthHeaders({ "Content-Type": "application/json" }),
+        body: JSON.stringify({ bot_token, chat_id })
+      });
+      const data = await res.json();
+      alert(data.message);
+    }
+
+    async function testTelegramMessage() {
+      try {
+        const res = await fetch("/api/notifications/test-telegram", {
+          method: "POST",
+          headers: getAuthHeaders()
+        });
+        const data = await res.json();
+        alert(data.message || data.detail);
+      } catch (_) { alert("Falha na comunicação com o servidor."); }
+    }
+
+    async function sendTelegramAlertsNow() {
+      try {
+        const res = await fetch("/api/notifications/send-alerts", {
+          method: "POST",
+          headers: getAuthHeaders()
+        });
+        const data = await res.json();
+        alert(data.message || data.detail);
+      } catch (_) { alert("Falha na comunicação com o servidor."); }
+    }
+
     checkAuth();
   </script>
 </body>
