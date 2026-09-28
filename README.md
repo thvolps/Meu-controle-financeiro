@@ -1,1 +1,1 @@
-# Painel Financeiro - Cartões de Crédito e Alertas Telegram
+# Painel Financeiro
